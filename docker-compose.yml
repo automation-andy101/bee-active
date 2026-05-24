@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: bee-active-postgres
+    environment:
+      POSTGRES_DB: bee_active_db
+      POSTGRES_USER: bee_active_user
+      POSTGRES_PASSWORD: bee_active_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
