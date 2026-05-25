@@ -12,11 +12,20 @@ public class FitnessClass {
 
     private String title;
     private String category;
-    private String instructor;
+
+    @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    private Instructor instructor;
+
+    @ManyToOne
+    @JoinColumn(name = "studio_id")
+    private Studio studio;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int capacity;
     private String city;
+    
 
     public FitnessClass() {}
 
@@ -28,8 +37,11 @@ public class FitnessClass {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
-    public String getInstructor() { return instructor; }
-    public void setInstructor(String instructor) { this.instructor = instructor; }
+    public Instructor getInstructor() { return instructor; }
+    public void setInstructor(Instructor instructor) { this.instructor = instructor; }
+
+    public Studio getStudio() { return studio; }
+    public void setStudio(Studio studio) { this.studio = studio; }
 
     public LocalDateTime getStartTime() { return startTime; }
     public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
