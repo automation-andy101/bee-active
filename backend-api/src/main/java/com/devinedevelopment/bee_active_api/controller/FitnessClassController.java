@@ -25,4 +25,10 @@ public class FitnessClassController {
     public FitnessClass createClass(@RequestBody FitnessClass fitnessClass) {
         return repository.save(fitnessClass);
     }
+
+    @GetMapping("/{id}")
+    public FitnessClass getClassById(@PathVariable Long id) {
+        return repository.findById(id)
+                .orElseThrow();
+    }
 }
