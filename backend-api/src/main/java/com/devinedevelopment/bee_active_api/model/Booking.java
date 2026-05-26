@@ -10,9 +10,11 @@ public class Booking {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "fitness_class_id")
     private FitnessClass fitnessClass;
 
     public Booking() {}
