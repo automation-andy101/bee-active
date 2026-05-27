@@ -31,4 +31,5 @@ public class FitnessClassController {
         return repository.findById(id)
                 .orElseThrow();
     }
+    
 }

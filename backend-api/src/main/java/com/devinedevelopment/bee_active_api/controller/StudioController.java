@@ -25,4 +25,9 @@ public class StudioController {
     public Studio createStudio(@RequestBody Studio studio) {
         return studioRepository.save(studio);
     }
+
+    @GetMapping("/{id}")
+    public Studio getStudioById(@PathVariable Long id) {
+        return studioRepository.findById(id).orElseThrow();
+    }
 }

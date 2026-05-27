@@ -7,6 +7,10 @@ import com.devinedevelopment.bee_active_api.repository.BookingRepository;
 import com.devinedevelopment.bee_active_api.repository.FitnessClassRepository;
 import com.devinedevelopment.bee_active_api.repository.UserRepository;
 
+import com.devinedevelopment.bee_active_api.exception.BookingException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,19 +40,26 @@ public class BookingController {
 
     @PostMapping
     public Booking createBooking(@RequestBody Booking bookingRequest) {
-
         String email = SecurityContextHolder
-            .getContext()
-            .getAuthentication()
-            .getName();
+                .getContext()
+                .getAuthentication()
+                .getName();
 
-        User user = userRepository
-            .findByEmail(email)
-            .orElseThrow();
+        User user = userRepository.findByEmail(email).orElseThrow();
 
         FitnessClass fitnessClass = fitnessClassRepository
-            .findById(bookingRequest.getFitnessClass().getId())
-            .orElseThrow();
+                .findById(bookingRequest.getFitnessClass().getId())
+                .orElseThrow();
+
+        if (bookingRepository.existsByUserAndFitnessClass(user, fitnessClass)) {
+            throw new BookingException("You already booked this class");
+        }
+
+        long currentBookings = bookingRepository.countByFitnessClass(fitnessClass);
+
+        if (currentBookings >= fitnessClass.getCapacity()) {
+            throw new BookingException("Class is full");
+        }
 
         Booking booking = new Booking();
         booking.setUser(user);
@@ -76,4 +87,5 @@ public class BookingController {
 
         return bookingRepository.findByUser(user);
     }
+    
 }
