@@ -1,8 +1,13 @@
 package com.devinedevelopment.bee_active_api.controller;
 
 import com.devinedevelopment.bee_active_api.model.FitnessClass;
+import com.devinedevelopment.bee_active_api.repository.BookingRepository;
 import com.devinedevelopment.bee_active_api.repository.FitnessClassRepository;
 import org.springframework.web.bind.annotation.*;
+
+import com.devinedevelopment.bee_active_api.dto.FitnessClassResponse;
+import com.devinedevelopment.bee_active_api.repository.BookingRepository;
+import java.util.stream.Collectors;
 
 import java.util.List;
 
@@ -10,26 +15,42 @@ import java.util.List;
 @RequestMapping("/api/classes")
 public class FitnessClassController {
 
-    private final FitnessClassRepository repository;
+    private final FitnessClassRepository fitnessClassRepository;
 
-    public FitnessClassController(FitnessClassRepository repository) {
-        this.repository = repository;
-    }
+    private final BookingRepository bookingRepository;
 
-    @GetMapping
-    public List<FitnessClass> getClasses() {
-        return repository.findAll();
+    public FitnessClassController(FitnessClassRepository fitnessClassRepository, BookingRepository bookingRepository) {
+        this.fitnessClassRepository = fitnessClassRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     @PostMapping
     public FitnessClass createClass(@RequestBody FitnessClass fitnessClass) {
-        return repository.save(fitnessClass);
+        return fitnessClassRepository.save(fitnessClass);
     }
 
     @GetMapping("/{id}")
-    public FitnessClass getClassById(@PathVariable Long id) {
-        return repository.findById(id)
+    public FitnessClassResponse getClassById(@PathVariable Long id) {
+        FitnessClass fitnessClass = fitnessClassRepository.findById(id)
                 .orElseThrow();
+
+        long bookingCount = bookingRepository.countByFitnessClass(fitnessClass);
+        int spotsRemaining = fitnessClass.getCapacity() - (int) bookingCount;
+
+        return new FitnessClassResponse(fitnessClass, spotsRemaining);
+    }
+
+    @GetMapping
+    public List<FitnessClassResponse> getClasses() {
+        return fitnessClassRepository.findAll()
+                .stream()
+                .map(fitnessClass -> {
+                    long bookingCount = bookingRepository.countByFitnessClass(fitnessClass);
+                    int spotsRemaining = fitnessClass.getCapacity() - (int) bookingCount;
+
+                    return new FitnessClassResponse(fitnessClass, spotsRemaining);
+                })
+                .collect(Collectors.toList());
     }
     
 }
