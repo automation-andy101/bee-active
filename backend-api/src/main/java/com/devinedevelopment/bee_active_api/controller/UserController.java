@@ -4,6 +4,7 @@ import com.devinedevelopment.bee_active_api.model.Studio;
 import com.devinedevelopment.bee_active_api.model.User;
 import com.devinedevelopment.bee_active_api.repository.StudioRepository;
 import com.devinedevelopment.bee_active_api.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -32,5 +33,16 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userRepository.deleteById(id);
+    }
+
+    @GetMapping("/me")
+    public User getCurrentUser() {
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow();
     }
 }
