@@ -63,7 +63,7 @@ public class SecurityConfig {
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
 
-                configuration.setAllowedOrigins(List.of("http://localhost:8081"));
+                configuration.setAllowedOriginPatterns(List.of("*"));
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
                 configuration.setAllowCredentials(true);
@@ -73,4 +73,23 @@ public class SecurityConfig {
 
                 return source;
         }
+
+        // @Bean
+        // public CorsConfigurationSource corsConfigurationSource() {
+        //         CorsConfiguration configuration = new CorsConfiguration();
+
+        //         configuration.setAllowedOrigins(List.of("http://localhost:8081"));
+        //         configuration.setAllowedOrigins(List.of(
+        //                 "http://localhost:8081",
+        //                 "http://192.168.1.21:8081"
+        //         ));
+        //         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        //         configuration.setAllowedHeaders(List.of("*"));
+        //         configuration.setAllowCredentials(true);
+
+        //         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        //         source.registerCorsConfiguration("/**", configuration);
+
+        //         return source;
+        // }
 }
